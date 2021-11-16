@@ -114,3 +114,27 @@ public interface GenreRepository extends PageableRepository<Genre, Long> {
 
 }
 ```
+#### 6 Create a class to encapsulate the Update operations
+```
+@Introspected 
+public class GenreUpdateCommand {
+    @NotNull
+    private final Long id;
+
+    @NotBlank
+    private final String name;
+
+    public GenreUpdateCommand(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+```
