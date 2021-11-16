@@ -138,3 +138,77 @@ public class GenreUpdateCommand {
     }
 }
 ```
+#### 7 Implement GenreController
+```
+@ExecuteOn(TaskExecutors.IO)
+@Controller("/genres")
+public class GenreController {
+    protected final GenreRepository genreRepository;
+
+    public GenreController(GenreRepository genreRepository) {
+        this.genreRepository = genreRepository;
+    }
+
+    @Get("/{id}")
+    public Optional<Genre> show(Long id) {
+        return genreRepository.findById(id);
+    }
+
+    @Put
+    public HttpResponse update(@Body @Valid GenreUpdateCommand command) {
+        genreRepository.update(command.getId(), command.getName());
+        return HttpResponse
+                .noContent()
+                .header(HttpHeaders.LOCATION, location(command.getId()).getPath());
+    }
+
+    @Get(value = "/list")
+    public List<Genre> list(@Valid Pageable pageable) {
+        return genreRepository.findAll(pageable).getContent();
+    }
+
+    @Post
+    public HttpResponse<Genre> save(@Body("name") @NotBlank String name) {
+        Genre genre = genreRepository.save(name);
+
+        return HttpResponse
+                .created(genre)
+                .headers(headers -> headers.location(location(genre.getId())));
+    }
+
+    @Post("/ex")
+    public HttpResponse<Genre> saveExceptions(@Body @NotBlank String name) {
+        try {
+            Genre genre = genreRepository.saveWithException(name);
+            return HttpResponse
+                    .created(genre)
+                    .headers(headers -> headers.location(location(genre.getId())));
+        } catch(DataAccessException e) {
+            return HttpResponse.noContent();
+        }
+    }
+
+    @Delete("/{id}")
+    @Status(HttpStatus.NO_CONTENT)
+    public void delete(Long id) {
+        genreRepository.deleteById(id);
+    }
+
+
+    protected URI location(Long id) {
+        return URI.create("/genres/" + id);
+    }
+
+    protected URI location(Genre genre) {
+        return location(genre.getId());
+    }
+}
+
+------------------ ADD A ENTRY ------------------------
+
+curl -X "POST" "http://localhost:8080/genres" \                                                       ─╯
+     -H 'Content-Type: application/json; charset=utf-8' \
+     -d $'{ "name": "music" }'
+     
+ // RETURNS --> {"id":1,"name":"music"}% 
+```
