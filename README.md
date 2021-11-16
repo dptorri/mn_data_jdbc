@@ -85,3 +85,32 @@ public class Genre {
     }
 }
 ```
+#### 5.Repository Access create interface to define the operations to access the database
+The repository extends from PageableRepository. It inherits the hierarchy
+
+`PageableRepository → CrudRepository → GenericRepository`
+
+`PageableRepository`
+provides findAll(Pageable) and findAll(Sort)
+
+`CrudRepository`
+findAll(), save(Genre), deleteById(Long) and findById(Long
+
+`GenericRepository`
+features no methods but defines the entity type and ID type as generic arguments.
+```
+@JdbcRepository(dialect = Dialect.H2)
+public interface GenreRepository extends PageableRepository<Genre, Long> {
+
+    Genre save(@NonNull @NotBlank String name);
+
+    @Transactional
+    default Genre saveWithException(@NonNull @NotNull String name) {
+        save(name);
+        throw new DataAccessException("Oops DataAccessException occurred!");
+    }
+
+    int update(@NonNull @NotNull @Id Long id, @NonNull @NotNull String name);
+
+}
+```
