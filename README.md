@@ -25,3 +25,25 @@ datasources:
     password: ${JDBC_PASSWORD:""}
     driverClassName: ${JDBC_DRIVER:org.h2.Driver}
 ```
+#### 3. DB Schema creates tables BOOK and GENRE 
+```
+--- build.gradle ---
+
+implementation("io.micronaut.flyway:micronaut-flyway")
+
+--- application.yml
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+      
+--- V1__schema.sql ---
+
+DROP TABLE IF EXISTS BOOK;
+
+CREATE TABLE GENRE (
+  id    BIGINT SERIAL PRIMARY KEY NOT NULL,
+  name VARCHAR(255)              NOT NULL UNIQUE
+);
+```

@@ -8,3 +8,8 @@ datasources:
     username: ${JDBC_USER:sa}
     password: ${JDBC_PASSWORD:""}
     driverClassName: ${JDBC_DRIVER:org.h2.Driver}
+
+flyway:
+  datasources:
+    default:
+      enabled: true
