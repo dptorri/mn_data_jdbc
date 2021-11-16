@@ -47,3 +47,41 @@ CREATE TABLE GENRE (
   name VARCHAR(255)              NOT NULL UNIQUE
 );
 ```
+
+#### 4. Create Genre domain entity 
+```
+@MappedEntity
+public class Genre {
+
+    @Id
+    @GeneratedValue(GeneratedValue.Type.AUTO)
+    private Long id;
+
+    @NotNull
+    private String name;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Genre{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+}
+```
